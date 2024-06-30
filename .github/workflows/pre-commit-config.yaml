@@ -12,6 +12,9 @@ on:
       - '!main'
       - '!refs/pull/*'
 
+env:
+  VIRTUAL_ENV_DISABLE_PROMPT: 1
+
 jobs:
   pre-commit:
     runs-on: self-hosted
@@ -38,8 +41,8 @@ jobs:
 
       - name: Initilize poetry env
         run: |
+          poetry install --no-root --no-interaction
           poetry shell
-          poetry install --no-root
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
