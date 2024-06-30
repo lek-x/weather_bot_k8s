@@ -36,6 +36,11 @@ jobs:
       - name: Set current repo as safe
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+      - name: Initilize poetry env
+        run: |
+          poetry shell
+          poetry install --no-root
+
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
         with:
