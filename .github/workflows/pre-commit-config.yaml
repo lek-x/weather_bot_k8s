@@ -11,6 +11,8 @@ on:
       - '!master'
       - '!main'
       - '!refs/pull/*'
+env:
+  VIRTUAL_ENV_DISABLE_PROMPT: 1
 
 jobs:
   pre-commit:
@@ -38,10 +40,13 @@ jobs:
 
       - name: Initilize poetry env
         run: |
+          poetry install --no-root --no-interaction
           poetry shell
-          poetry install --no-root
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all-files -c .ci/.pre-commit-config.yaml
+  
+      - uses: pre-commit-ci/lite-action@v1.0.2
+        if: always()
