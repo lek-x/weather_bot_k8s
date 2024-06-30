@@ -47,7 +47,7 @@ jobs:
           image: ${{ vars.IMAGE_NAME }}
           tags: $GITHUB_RUN_NUMBER
           registry: ${{ vars.REPO }}
-          dockerfile: Dockerfile
+          dockerfile: docker/Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
