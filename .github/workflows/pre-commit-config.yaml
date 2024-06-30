@@ -40,7 +40,7 @@ jobs:
 
       - name: Initilize poetry env
         run: |
-          poetry install --no-root --no-interaction
+          poetry install --no-root
           source $(poetry env info --path)/bin/activate
 
       - name: Run pre-commit
