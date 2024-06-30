@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "weather_bot"
+version = "0.1.0"
+description = "Weather TG bot in k3s"
+authors = ["Roman <mmm.romka@gmail.com>"]
+readme = "README.md"
+packages = [{include = "bot_cicd"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pre-commit = "*"
+pylint = "^3.2.3"
+commitizen = "^3.27.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

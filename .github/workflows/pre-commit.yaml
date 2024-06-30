@@ -1,0 +1,43 @@
+---
+name: Pre-commit
+run-name: "Code validation [attempt: #${{ github.run_attempt }}]"
+
+# yamllint disable-line rule:truthy
+on:
+  # yamllint disable-line rule:empty-values
+  push:
+    branches:
+      - '**'
+      - '!master'
+      - '!main'
+      - '!refs/pull/*'
+
+jobs:
+  pre-commit:
+    runs-on:
+      - self-hosted
+    container:
+      image: ghcr.io/lek-x/ubuntu_lint:v2
+      credentials:
+        username: ${{ secrets.DOCKER_USERNAME }} # lek-x
+        password: ${{ secrets.DOCKER_PASSWORD }} # ${{ secrets.PACKAGES_TOKEN }}
+      env:
+        registry-username: ${{ secrets.DOCKER_USERNAME }}
+        registry-password: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+
+      - name: Setup Python
+        uses: actions/setup-python@v4.7.0
+        with:
+          python-version: '3.10'
+
+      - name: Checkout current repo
+        uses: actions/checkout@v4.1.7
+
+      - name: Set current repo as safe
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+        with:
+          extra_args: --all-files -c .ci/pre-commit-config.yaml

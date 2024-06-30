@@ -1,0 +1,135 @@
+---
+name: Deploy
+# yamllint disable rule:truthy
+on:
+  workflow_dispatch:
+    inputs:
+      job_environment:
+        type: choice
+        description: 'Job environment prod or dev'
+        required: true
+        default: 'dev'
+        options:
+          - prod
+          - dev
+
+      clean_docker:
+        type: choice
+        description: 'Remove all docker images and voluems'
+        required: false
+        default: 'no'
+        options:
+          - no
+          - yes
+# yamllint enable rule:truthy
+
+      dry_run:
+        type: boolean
+        description: 'Check for DRY, uncheck for prod'
+        required: true
+        default: true
+
+jobs:
+  Build_docker_image:
+    runs-on:
+      - self-hosted
+    environment: ${{ inputs.job_environment }}
+    steps:
+      - name: Clean old Docker images
+        if: "${{ inputs.clean_docker == 'yes' }}"
+        run: docker system prune -a -f
+
+      - name: Checkout current repo
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6.4
+        with:
+          image: ${{ vars.IMAGE_NAME }}
+          tags: $GITHUB_RUN_NUMBER
+          registry: ${{ vars.REPO }}
+          dockerfile: Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Check image by Anchore
+        run: |
+          grype  ${{ vars.REPO }}/${{ secrets.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:$GITHUB_RUN_NUMBER
+
+  Render_k8s_template:
+    needs: [Build_docker_image]
+    runs-on:
+      - self-hosted
+    steps:
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        env:
+          TF_VAR_IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+          TF_VAR_REPO: ${{ vars.REPO }}
+          TF_VAR_VERSION: $GITHUB_RUN_NUMBER
+          TF_VAR_JOB_ENV: ${{ inputs.job_environment }}
+          TF_VAR_DB_PORT: ${{ vars.POSTGRES_PORT }}
+          TF_VAR_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          TF_VAR_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+        continue-on-error: true
+        env:
+          TF_VAR_IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+          TF_VAR_REPO: ${{ vars.REPO }}
+          TF_VAR_VERSION: $GITHUB_RUN_NUMBER
+          TF_VAR_JOB_ENV: ${{ inputs.job_environment }}
+          TF_VAR_DB_PORT: ${{ vars.POSTGRES_PORT }}
+          TF_VAR_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          TF_VAR_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Render configs
+        id: apply
+        run: terraform apply -auto-approve
+        continue-on-error: true
+        env:
+          TF_VAR_IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+          TF_VAR_REPO: ${{ vars.REPO }}
+          TF_VAR_VERSION: $GITHUB_RUN_NUMBER
+          TF_VAR_JOB_ENV: ${{ inputs.job_environment }}
+          TF_VAR_DB_PORT: ${{ vars.POSTGRES_PORT }}
+          TF_VAR_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          TF_VAR_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+  Run_k3s:
+    needs: [Render_template]
+    runs-on:
+      - self-hosted
+    steps:
+      - name: Dry run k3s
+        if: ${{ inputs.dry_run == false }}
+        run: |
+          cd k8s/${{ env.job_environment }}
+          kubectl apply --server-dry-run -f pgsql.yaml
+          kubectl apply --server-dry-run -f app.yaml
+
+      - name: Apply changes
+        if: ${{ inputs.dry_run == true }}
+        run: |
+          cd k8s/${{ env.job_environment }}
+          kubectl apply -f pgsql.yaml
+          kubectl apply -f app.yaml
