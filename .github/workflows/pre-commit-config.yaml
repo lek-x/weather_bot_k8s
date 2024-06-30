@@ -53,7 +53,7 @@ jobs:
         run: poetry install --no-root
 
       - name: Run pre-commit
-        run: pre-commit --all-files
+        run: poetry run pre-commit run --all-files
         
       - uses: pre-commit-ci/lite-action@v1.0.2
         if: always()
