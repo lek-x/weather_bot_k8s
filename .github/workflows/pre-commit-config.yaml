@@ -14,9 +14,6 @@ on:
 env:
   VIRTUAL_ENV_DISABLE_PROMPT: 1
 
-env:
-  VIRTUAL_ENV_DISABLE_PROMPT: 1
-
 jobs:
   pre-commit:
     runs-on: self-hosted
