@@ -36,6 +36,9 @@ jobs:
       - name: Set current repo as safe
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+      - name: Debug
+        run: ls -la
+
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
         with:
