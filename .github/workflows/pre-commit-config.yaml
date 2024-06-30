@@ -14,8 +14,7 @@ on:
 
 jobs:
   pre-commit:
-    runs-on:
-      - self-hosted
+    runs-on: self-hosted
     container:
       image: ghcr.io/lek-x/ubuntu_lint:v2
       credentials:
