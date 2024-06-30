@@ -39,7 +39,7 @@ jobs:
         run: rm -rf $GITHUB_WORKSPACE/.git/index.lock || /bin/true
 
       - name: Checkout current repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.7
 
       - name: Build Docker image
         uses: mr-smithers-excellent/docker-build-push@v6.4
