@@ -1,6 +1,6 @@
 ---
 name: Deploy
-# yamllint disable rule:truthy
+# yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
     inputs:
@@ -14,14 +14,10 @@ on:
           - dev
 
       clean_docker:
-        type: choice
+        type: boolean
         description: 'Remove all docker images and voluems'
         required: false
-        default: 'no'
-        options:
-          - no
-          - yes
-# yamllint enable rule:truthy
+        default: false
 
       dry_run:
         type: boolean
@@ -36,7 +32,7 @@ jobs:
     environment: ${{ inputs.job_environment }}
     steps:
       - name: Clean old Docker images
-        if: "${{ inputs.clean_docker == 'yes' }}"
+        if: "${{ inputs.clean_docker == true }}"
         run: docker system prune -a -f
 
       - name: Checkout current repo
