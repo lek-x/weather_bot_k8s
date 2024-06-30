@@ -44,7 +44,7 @@ jobs:
           poetry install --no-root
           source .venv/bin/activate
 
-      - name: Run pre-commit
+      - name: Run pre-commit test
         uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all-files -c .ci/.pre-commit-config.yaml
