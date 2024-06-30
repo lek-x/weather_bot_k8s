@@ -112,7 +112,7 @@ jobs:
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
 
   Run_k3s:
-    needs: [Render_template]
+    needs: [Render_k8s_template]
     runs-on:
       - self-hosted
     steps:
