@@ -137,8 +137,8 @@ jobs:
         if: ${{ inputs.dry_run == true }}
         run: |
           cd k8s/${{ env.job_environment }}
-          kubectl apply --server-dry-run -f pgsql.yaml
-          kubectl apply --server-dry-run -f app.yaml
+          kubectl apply --dry-run=server -f pgsql.yaml
+          kubectl apply --dry-run=server -f app.yaml
 
       - name: Apply changes
         if: ${{ inputs.dry_run == false }}
