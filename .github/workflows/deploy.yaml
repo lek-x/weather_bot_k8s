@@ -67,6 +67,7 @@ jobs:
   Render_k8s_template:
     needs: [Build_docker_image]
     runs-on: [self-hosted]
+    environment: ${{ inputs.job_environment }}
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v4
@@ -96,6 +97,7 @@ jobs:
           TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         working-directory: deployment/terraform
+        with:
 
       - name: Terraform Plan
         id: plan
@@ -131,6 +133,7 @@ jobs:
 
   Run_k3s:
     needs: [Render_k8s_template]
+    environment: ${{ inputs.job_environment }}
     runs-on: [self-hosted]
     steps:
       - name: Dry run k3s
