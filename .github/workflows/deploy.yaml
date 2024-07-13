@@ -34,21 +34,27 @@ jobs:
         if: "${{ inputs.clean_docker == true }}"
         run: docker system prune -a -f
 
-      - name: Release git lock file
-        run: rm -rf $GITHUB_WORKSPACE/.git/index.lock || /bin/true
-
       - name: Checkout current repo
         uses: actions/checkout@v4.1.7
 
-      - name: Build Docker image
-        uses: mr-smithers-excellent/docker-build-push@v6.4
+      - name: Build and push
+        uses: docker/build-push-action@v6
         with:
-          image: ${{ vars.IMAGE_NAME }}
-          tags: $GITHUB_RUN_NUMBER
-          registry: ${{ vars.REPO }}
-          dockerfile: docker/Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          push: true
+          context: docker/Dockerfile
+          tags: ${{ vars.REPO }}/lek-x/${{ vars.IMAGE_NAME }}:$GITHUB_RUN_NUMBER
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.DOCKER_PASSWORD }}
+
+      # - name: Build Docker image
+      #   uses: mr-smithers-excellent/docker-build-push@v6.4
+      #   with:
+      #     image: ${{ vars.IMAGE_NAME }}
+      #     tags: $GITHUB_RUN_NUMBER
+      #     registry: ${{ vars.REPO }}
+      #     dockerfile: docker/Dockerfile
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Check image by Anchore
         run: |
