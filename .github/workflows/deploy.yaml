@@ -42,7 +42,7 @@ jobs:
         with:
           push: true
           context: docker/Dockerfile
-          tags: ${{ vars.REPO }}/lek-x/${{ vars.IMAGE_NAME }}:$GITHUB_RUN_NUMBER
+          tags: ${{ vars.REPO }}/lek-x/${{ vars.IMAGE_NAME }}:${{ github.run_number }}
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.DOCKER_PASSWORD }}
 
