@@ -138,12 +138,11 @@ jobs:
       - name: Dry run k3s
         if: ${{ inputs.dry_run == true }}
         run: |
-          kubectl apply --dry-run=server -f k8s/${{ env.job_environment }}/pgsql.yaml
-          kubectl apply --dry-run=server -f k8s/${{ env.job_environment }}/app.yaml
+          kubectl apply --dry-run=server -f k8s/${{ inputs.job_environment }}/pgsql.yaml
+          kubectl apply --dry-run=server -f k8s/${{ inputs.job_environment }}/app.yaml
 
       - name: Apply changes
         if: ${{ inputs.dry_run == false }}
         run: |
-          cd k8s/${{ env.job_environment }}
-          kubectl apply -f pgsql.yaml
-          kubectl apply -f app.yaml
+          kubectl apply -f k8s/${{ inputs.job_environment }}/pgsql.yaml
+          kubectl apply -f k8s/${{ inputs.job_environment }}/app.yaml
