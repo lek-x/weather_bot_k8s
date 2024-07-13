@@ -69,13 +69,16 @@ jobs:
 
   Render_k8s_template:
     needs: [Build_docker_image]
-    runs-on:
-      - self-hosted
+    runs-on: [self-hosted]
+    defaults:
+      run:
+        working-directory: deployment/terraform
     steps:
 
       - name: Terraform Init
         id: init
         run: terraform init
+        
 
       - name: Terraform fmt
         id: fmt
