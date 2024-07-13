@@ -27,8 +27,7 @@ on:
 
 jobs:
   Build_docker_image:
-    runs-on:
-      - self-hosted
+    runs-on: self-hosted
     environment: ${{ inputs.job_environment }}
     steps:
       - name: Clean old Docker images
