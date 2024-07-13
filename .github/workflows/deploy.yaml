@@ -58,7 +58,7 @@ jobs:
 
       - name: Check image by Anchore
         run: |
-          grype  ${{ vars.REPO }}/${{ secrets.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:$GITHUB_RUN_NUMBER
+          grype  ${{ vars.REPO }}/${{ secrets.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ github.run_number }}
 
   Render_k8s_template:
     needs: [Build_docker_image]
