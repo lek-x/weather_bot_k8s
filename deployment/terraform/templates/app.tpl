@@ -15,7 +15,7 @@ data:
   POSTGRES_PORT: ${POSTGRES_PORT}
   BOT_TOKEN: "${BOT_TOKEN}-${JOB_ENV}"
 
-
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -48,8 +48,7 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: ${JOB_ENV}
-  name: bot-svc
-  env: ${JOB_ENV}
+  name: bot-svc-${JOB_ENV}
 spec:
   type: ClusterIP
   selector:
@@ -76,7 +75,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: bot-svc
-                env: ${JOB_ENV}
+                name: bot-svc-${JOB_ENV}
                 port:
                   number: 88
