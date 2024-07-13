@@ -127,7 +127,7 @@ jobs:
           TF_VAR_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          working-directory: deployment/terraform
+        working-directory: deployment/terraform
 
   Run_k3s:
     needs: [Render_k8s_template]
