@@ -88,7 +88,7 @@ jobs:
         env:
           TF_VAR_IMAGE_NAME: ${{ vars.IMAGE_NAME }}
           TF_VAR_REPO: ${{ vars.REPO }}
-          TF_VAR_VERSION: $GITHUB_RUN_NUMBER
+          TF_VAR_VERSION: ${{ github.run_number }}
           TF_VAR_JOB_ENV: ${{ inputs.job_environment }}
           TF_VAR_DB_PORT: ${{ vars.POSTGRES_PORT }}
           TF_VAR_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
@@ -104,7 +104,7 @@ jobs:
         env:
           TF_VAR_IMAGE_NAME: ${{ vars.IMAGE_NAME }}
           TF_VAR_REPO: ${{ vars.REPO }}
-          TF_VAR_VERSION: $GITHUB_RUN_NUMBER
+          TF_VAR_VERSION: ${{ github.run_number }}
           TF_VAR_JOB_ENV: ${{ inputs.job_environment }}
           TF_VAR_DB_PORT: ${{ vars.POSTGRES_PORT }}
           TF_VAR_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
@@ -120,7 +120,7 @@ jobs:
         env:
           TF_VAR_IMAGE_NAME: ${{ vars.IMAGE_NAME }}
           TF_VAR_REPO: ${{ vars.REPO }}
-          TF_VAR_VERSION: $GITHUB_RUN_NUMBER
+          TF_VAR_VERSION: ${{ github.run_number }}
           TF_VAR_JOB_ENV: ${{ inputs.job_environment }}
           TF_VAR_DB_PORT: ${{ vars.POSTGRES_PORT }}
           TF_VAR_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
@@ -134,14 +134,14 @@ jobs:
     runs-on: [self-hosted]
     steps:
       - name: Dry run k3s
-        if: ${{ inputs.dry_run == false }}
+        if: ${{ inputs.dry_run == true }}
         run: |
           cd k8s/${{ env.job_environment }}
           kubectl apply --server-dry-run -f pgsql.yaml
           kubectl apply --server-dry-run -f app.yaml
 
       - name: Apply changes
-        if: ${{ inputs.dry_run == true }}
+        if: ${{ inputs.dry_run == false }}
         run: |
           cd k8s/${{ env.job_environment }}
           kubectl apply -f pgsql.yaml
