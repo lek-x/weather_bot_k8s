@@ -34,9 +34,6 @@ jobs:
         if: "${{ inputs.clean_docker == true }}"
         run: docker system prune -a -f
 
-      #- name: Checkout current repo
-      #  uses: actions/checkout@v4
-
       - name: Login to Docker Repository
         uses: docker/login-action@v3
         with:
@@ -70,20 +67,20 @@ jobs:
   Render_k8s_template:
     needs: [Build_docker_image]
     runs-on: [self-hosted]
-    defaults:
-      run:
-        working-directory: deployment/terraform
     steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
 
       - name: Terraform Init
         id: init
         run: terraform init
+        working-directory: deployment/terraform
         
-
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
+        working-directory: deployment/terraform
 
       - name: Terraform Validate
         id: validate
@@ -98,6 +95,7 @@ jobs:
           TF_VAR_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        working-directory: deployment/terraform
 
       - name: Terraform Plan
         id: plan
@@ -113,6 +111,7 @@ jobs:
           TF_VAR_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        working-directory: deployment/terraform
 
       - name: Render configs
         id: apply
@@ -128,11 +127,11 @@ jobs:
           TF_VAR_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          working-directory: deployment/terraform
 
   Run_k3s:
     needs: [Render_k8s_template]
-    runs-on:
-      - self-hosted
+    runs-on: [self-hosted]
     steps:
       - name: Dry run k3s
         if: ${{ inputs.dry_run == false }}
