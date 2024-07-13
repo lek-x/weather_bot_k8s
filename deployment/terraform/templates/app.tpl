@@ -42,6 +42,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: app-secret
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
 
 ---
 apiVersion: v1
