@@ -12,7 +12,7 @@ data:
   POSTGRES_USER: "${POSTGRES_USER}"
   POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
   POSTGRES_HOST: "postgres"
-  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_PORT: "${POSTGRES_PORT}"
   BOT_TOKEN: "${BOT_TOKEN}-${JOB_ENV}"
 
 ---
@@ -55,8 +55,15 @@ spec:
     app: bot
     env: ${JOB_ENV}
   ports:
-    - port: 88
-    - port: 8443
+    - name: first 
+      port: 88
+      protocol: TCP
+      targetPort: 88
+    - name: second
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+
 
 ---
 apiVersion: networking.k8s.io/v1
