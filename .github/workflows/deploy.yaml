@@ -34,9 +34,6 @@ jobs:
         if: "${{ inputs.clean_docker == true }}"
         run: docker system prune -a -f
 
-      - name: Release git lock file
-        run: rm -rf $GITHUB_WORKSPACE/.git/index.lock || /bin/true
-
       - name: Checkout current repo
         uses: actions/checkout@v4.1.7
 
