@@ -63,12 +63,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: ${JOB_ENV}
-  name: bot-ingress
+  name: bot-ingress-${JOB_ENV}
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: bot
 spec:
   rules:
-    - host: bot.$IP.sslip.io
+    - host: bot.oasis.local.development
       http:
         paths:
           - path: /
