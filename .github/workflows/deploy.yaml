@@ -34,14 +34,14 @@ jobs:
         if: "${{ inputs.clean_docker == true }}"
         run: docker system prune -a -f
 
-      - name: Checkout current repo
-        uses: actions/checkout@v4
+      #- name: Checkout current repo
+      #  uses: actions/checkout@v4
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
-          context: docker/Dockerfile
+          context: "{{defaultContext}}:docker"
           tags: ${{ vars.REPO }}/lek-x/${{ vars.IMAGE_NAME }}:${{ github.run_number }}
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.DOCKER_PASSWORD }}
