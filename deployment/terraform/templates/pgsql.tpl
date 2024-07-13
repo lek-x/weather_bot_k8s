@@ -12,7 +12,7 @@ data:
   POSTGRES_USER: "${POSTGRES_USER}"
   POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
 
-
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -47,6 +47,7 @@ spec:
           persistentVolumeClaim:
             claimName: postgres-volume-claim-${JOB_ENV}
 
+---
 apiVersion: v1
 kind: Service
 metadata:
