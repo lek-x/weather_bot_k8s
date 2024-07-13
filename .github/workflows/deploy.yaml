@@ -35,7 +35,7 @@ jobs:
         run: docker system prune -a -f
 
       - name: Checkout current repo
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4
 
       - name: Build and push
         uses: docker/build-push-action@v6
