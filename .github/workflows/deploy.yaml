@@ -97,7 +97,6 @@ jobs:
           TF_VAR_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         working-directory: deployment/terraform
-        with:
 
       - name: Terraform Plan
         id: plan
