@@ -13,7 +13,7 @@ data:
   POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
   POSTGRES_HOST: "postgres"
   POSTGRES_PORT: "${POSTGRES_PORT}"
-  BOT_TOKEN: "${BOT_TOKEN}-${JOB_ENV}"
+  BOT_TOKEN: "${BOT_TOKEN}"
 
 ---
 apiVersion: apps/v1
