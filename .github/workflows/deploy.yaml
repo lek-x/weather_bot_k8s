@@ -30,6 +30,12 @@ on:
         description: 'Check for deletion manifests after deployment'
         required: true
         default: true
+      
+      drop_db:
+        type: boolean
+        description: 'Check for DROP current database'
+        required: false
+        default: false
 
 
 jobs:
@@ -40,6 +46,10 @@ jobs:
       - name: Clean old Docker images
         if: "${{ inputs.clean_docker == true }}"
         run: docker system prune -a -f
+      
+      - name: Drop database
+        if: "${{ inputs.drop_db == true }}"
+        run: rm -rf /opt/persist_volume-${{ inputs.job_environment }}/*
 
       - name: Login to Docker Repository
         uses: docker/login-action@v3
