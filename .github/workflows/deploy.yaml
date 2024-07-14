@@ -27,7 +27,7 @@ on:
       
       clean_manifests:
         type: boolean
-        description: 'Check delete manifests after deployment'
+        description: 'Check for deletion manifests after deployment'
         required: true
         default: true
 
