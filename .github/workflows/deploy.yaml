@@ -24,6 +24,13 @@ on:
         description: 'Check for DRY, uncheck for prod'
         required: true
         default: true
+      
+      clean_manifests:
+        type: boolean
+        description: 'Check delete manifests after deployment'
+        required: true
+        default: true
+
 
 jobs:
   Build_docker_image:
@@ -49,16 +56,6 @@ jobs:
           tags: ${{ vars.REPO }}/lek-x/${{ vars.IMAGE_NAME }}:${{ github.run_number }}
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.DOCKER_PASSWORD }}
-
-      # - name: Build Docker image
-      #   uses: mr-smithers-excellent/docker-build-push@v6.4
-      #   with:
-      #     image: ${{ vars.IMAGE_NAME }}
-      #     tags: $GITHUB_RUN_NUMBER
-      #     registry: ${{ vars.REPO }}
-      #     dockerfile: docker/Dockerfile
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Check image by Anchore
         run: |
@@ -146,3 +143,7 @@ jobs:
         run: |
           kubectl apply -f k8s/${{ inputs.job_environment }}/pgsql.yaml
           kubectl apply -f k8s/${{ inputs.job_environment }}/app.yaml
+      
+      - name: Clean manifests
+        if: ${{ inputs.clean_manifests == true }}
+        run: rm -rf k8s/${{ inputs.job_environment }}
