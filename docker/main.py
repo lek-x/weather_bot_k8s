@@ -328,7 +328,7 @@ def auto_send(message):
     """
     bot.send_message(
         message.chat.id,
-        "Please send text in format for auto notification. \nFor enabling: 'yes/08:00/Paris' \nFor disabling send: 'no' ",
+        "Please send text in format for auto notification, time should be in UTC time zone. \nFor enabling: 'yes/08:00/Paris' \nFor disabling send: 'no' ",
     )
 
     bot.register_next_step_handler(message, get_switch)
