@@ -5,7 +5,7 @@ run-name: "BackUp [attempt: #${{ github.run_attempt }}]"
 
 # yamllint disable-line rule:truthy
 on:
-   workflow_dispatch:
+  workflow_dispatch:
   # yamllint disable-line rule:empty-values
   schedule:
     - cron: "5 3 * * *"

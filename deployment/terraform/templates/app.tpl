@@ -57,7 +57,7 @@ spec:
     app: bot
     env: ${JOB_ENV}
   ports:
-    - name: first 
+    - name: first
       port: 88
       protocol: TCP
       targetPort: 88

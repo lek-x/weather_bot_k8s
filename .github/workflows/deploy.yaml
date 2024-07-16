@@ -24,13 +24,13 @@ on:
         description: 'Check for DRY, uncheck for Prod'
         required: true
         default: true
-      
+
       clean_manifests:
         type: boolean
         description: 'Check for deleting manifests after Deployment'
         required: true
         default: true
-      
+
       drop_db:
         type: boolean
         description: 'Check for DROP current database'
@@ -46,7 +46,7 @@ jobs:
       - name: Clean old Docker images
         if: "${{ inputs.clean_docker == true }}"
         run: docker system prune -a -f
-      
+
       - name: Drop database
         if: "${{ inputs.drop_db == true }}"
         run: sudo rm -rf /opt/persist_volume-${{ inputs.job_environment }}/*
@@ -83,7 +83,7 @@ jobs:
         id: init
         run: terraform init
         working-directory: deployment/terraform
-        
+
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
@@ -153,7 +153,7 @@ jobs:
         run: |
           kubectl apply -f k8s/${{ inputs.job_environment }}/pgsql.yaml
           kubectl apply -f k8s/${{ inputs.job_environment }}/app.yaml
-      
+
       - name: Clean manifests
         if: ${{ inputs.clean_manifests == true }}
         run: rm -rf k8s/${{ inputs.job_environment }}
