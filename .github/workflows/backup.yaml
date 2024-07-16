@@ -10,7 +10,7 @@ on:
     - cron: "5 3 * * *"
 
 jobs:
-  BackUp db:
+  backup_db:
     runs-on: self-hosted
     environment: prod
     steps:
