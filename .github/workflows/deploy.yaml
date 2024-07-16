@@ -21,13 +21,13 @@ on:
 
       dry_run:
         type: boolean
-        description: 'Check for DRY, uncheck for prod'
+        description: 'Check for DRY, uncheck for Prod'
         required: true
         default: true
       
       clean_manifests:
         type: boolean
-        description: 'Check for deletion manifests after deployment'
+        description: 'Check for deleting manifests after Deployment'
         required: true
         default: true
       
