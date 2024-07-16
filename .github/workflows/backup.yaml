@@ -17,8 +17,8 @@ jobs:
       - name: Run backup
         # yamllint disable
         run: |
-          port_n=$(kubectl get services -n prod | grep postgres | awk '{print $5}' | grep -oP '(?<=5432:)\d+')
+          export port_n=$(kubectl get services -n prod | grep postgres | awk '{print $5}' | grep -oP '(?<=5432:)\d+')
           export PGPASSWORD='${{ secrets.POSTGRES_PASSWORD }}'
           pg_dump -C -U ${{ secrets.POSTGRES_USER }} -h localhost -p $port_n  -d ${{ secrets.POSTGRES_DB }} -F t -f ~/wtbot_db_$(date +"%d").sql
-          tar -cjf ~/wtbot_db_$(date +"%d").tar.bz2 ~/wtbot_db_$(date +"%d").sql && rm -f ~/wtbot_db_$(date +"%d").sql
+          tar -cjvf ~/wtbot_db_$(date +"%d").tar.bz2 ~/wtbot_db_$(date +"%d").sql && rm -f ~/wtbot_db_$(date +"%d").sql
           unset PGPASSWORD port_n
