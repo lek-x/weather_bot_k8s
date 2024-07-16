@@ -37,7 +37,6 @@ on:
         required: false
         default: false
 
-
 jobs:
   Build_docker_image:
     runs-on: self-hosted

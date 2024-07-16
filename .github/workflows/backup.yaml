@@ -1,12 +1,11 @@
-
 ---
 name: BackUp
 run-name: "BackUp [attempt: #${{ github.run_attempt }}]"
 
 # yamllint disable-line rule:truthy
 on:
-  workflow_dispatch:
   # yamllint disable-line rule:empty-values
+  workflow_dispatch:
   schedule:
     - cron: "5 3 * * *"
 
@@ -16,6 +15,7 @@ jobs:
     environment: prod
     steps:
       - name: Run backup
+        # yamllint disable
         run: |
           port_n=$(kubectl get services -n prod | grep postgres | awk '{print $5}' | grep -oP '(?<=5432:)\d+')
           export PGPASSWORD='${{ secrets.POSTGRES_PASSWORD }}'
