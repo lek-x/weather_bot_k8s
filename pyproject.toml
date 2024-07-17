@@ -19,7 +19,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.0.1"
+version = "0.0.2"
 version_files = [
     "pyproject.toml:version"]
 update_changelog_on_bump = true
