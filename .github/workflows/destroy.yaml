@@ -39,7 +39,6 @@ on:
 
 jobs:
   Render_k8s_template:
-    needs: [Build_docker_image]
     runs-on: [self-hosted]
     environment: ${{ inputs.job_environment }}
     steps:
