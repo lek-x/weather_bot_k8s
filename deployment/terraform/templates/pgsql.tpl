@@ -10,8 +10,9 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 5432
-      targetPort: pgsql_port
+    - name: pgsql-port-svc
+      port: 5432
+      targetPort: pgsql-port
   selector:
     app: postgres
     env: ${JOB_ENV}
@@ -51,8 +52,8 @@ spec:
           image: 'postgres:16'
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5432
-              name: pgsql_port
+            - name: pgsql-port
+              containerPort: 5432
           envFrom:
             - configMapRef:
                 name: postgres-secret

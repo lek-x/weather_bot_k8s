@@ -11,14 +11,14 @@ spec:
     app: bot
     env: ${JOB_ENV}
   ports:
-    - name: first
+    - name: main-port-svc
       port: 88
       protocol: TCP
-      targetPort: main_port
-    - name: second
+      targetPort: main-port
+    - name: second-port-svc
       port: 8443
       protocol: TCP
-      targetPort: second_port
+      targetPort: second-port
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -64,9 +64,9 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 88
-              name: main_port
+              name: main-port
             - containerPort: 8443
-              name: second_port
+              name: second-port
           envFrom:
             - configMapRef:
                 name: app-secret
