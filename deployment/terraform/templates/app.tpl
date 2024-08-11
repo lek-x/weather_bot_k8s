@@ -6,7 +6,7 @@ metadata:
   name: bot-svc-${JOB_ENV}
 spec:
   type: ClusterIP
-  sessionAffinitty: ClientIP
+  sessionAffinity: ClientIP
   selector:
     app: bot
     env: ${JOB_ENV}
