@@ -18,7 +18,7 @@ jobs:
   pre-commit:
     runs-on: self-hosted
     container:
-      image: ghcr.io/lek-x/ubuntu_lint:v3
+      image: ghcr.io/lek-x/ubuntu_lint:v4
       credentials:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
