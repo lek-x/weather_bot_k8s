@@ -390,12 +390,12 @@ def get_weather(message):
     func for get weather and sending it to user
     """
     if re.match(
-        "glory to ukraine|slava ukraine|слава украине|cлава україні",
+        "version|VERSION|",
         str(message.text).lower(),
     ):
         bot.reply_to(
             message,
-            "Героям Слава!\U0001f1fa\U0001f1e6\nGlory to the Heroes!\U0001f1fa\U0001f1e6",
+            "Version 0.0.2",
         )
 
     else:
