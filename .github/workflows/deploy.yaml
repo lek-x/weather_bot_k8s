@@ -139,7 +139,7 @@ jobs:
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         working-directory: deployment/terraform
 
-  Run_k3s:
+  Deploy_Services:
     needs: [Render_k8s_template]
     environment: ${{ inputs.job_environment }}
     runs-on: [self-hosted]

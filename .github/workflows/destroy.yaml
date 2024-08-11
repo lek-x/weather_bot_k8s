@@ -106,7 +106,7 @@ jobs:
           TF_VAR_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         working-directory: deployment/terraform
 
-  Run_k3s:
+  Delete_Deployments:
     needs: [Render_k8s_template]
     environment: ${{ inputs.job_environment }}
     runs-on: [self-hosted]
@@ -120,8 +120,8 @@ jobs:
       - name: Deleting Deployment
         if: ${{ inputs.dry_run == false }}
         run: |
-          kubectl delete -f k8s/${{ inputs.job_environment }}/app.yaml --record
-          kubectl delete -f k8s/${{ inputs.job_environment }}/pgsql.yaml --record
+          kubectl delete -f k8s/${{ inputs.job_environment }}/app.yaml
+          kubectl delete -f k8s/${{ inputs.job_environment }}/pgsql.yaml
 
       - name: Clean up manifests
         if: ${{ inputs.clean_manifests == true }}
