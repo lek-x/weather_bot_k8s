@@ -56,7 +56,7 @@ jobs:
         run: poetry run pre-commit run --all-files
 
       - name: Fix permissions for venv
-        run: sudo chown runner:runner -R .venv/
+        run: sudo rm -rf .venv/
 
       - uses: pre-commit-ci/lite-action@v1.0.2
         if: always()
