@@ -1,5 +1,23 @@
 ---
 apiVersion: v1
+kind: Service
+metadata:
+  namespace: ${JOB_ENV}
+  name: postgres
+  labels:
+    app: postgres
+    env: ${JOB_ENV}
+spec:
+  type: NodePort
+  ports:
+    - name: pgsql-port-svc
+      port: 5432
+      targetPort: pgsql-port
+  selector:
+    app: postgres
+    env: ${JOB_ENV}
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: ${JOB_ENV}
@@ -11,7 +29,6 @@ data:
   POSTGRES_DB: "${POSTGRES_DB}"
   POSTGRES_USER: "${POSTGRES_USER}"
   POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,7 +52,8 @@ spec:
           image: 'postgres:16'
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5432
+            - name: pgsql-port
+              containerPort: 5432
           envFrom:
             - configMapRef:
                 name: postgres-secret
@@ -46,20 +64,3 @@ spec:
         - name: postgresdata
           persistentVolumeClaim:
             claimName: postgres-volume-claim-${JOB_ENV}
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: ${JOB_ENV}
-  name: postgres
-  labels:
-    app: postgres
-    env: ${JOB_ENV}
-spec:
-  type: NodePort
-  ports:
-    - port: 5432
-  selector:
-    app: postgres
-    env: ${JOB_ENV}

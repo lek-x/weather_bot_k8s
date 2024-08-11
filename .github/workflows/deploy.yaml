@@ -75,6 +75,9 @@ jobs:
     runs-on: [self-hosted]
     environment: ${{ inputs.job_environment }}
     steps:
+      - name: Fixing permission before checkout
+        run:  sudo chown runner:runner -R .
+
       - name: Checkout current repo
         uses: actions/checkout@v4
 
@@ -150,8 +153,8 @@ jobs:
       - name: Apply changes
         if: ${{ inputs.dry_run == false }}
         run: |
-          kubectl apply -f k8s/${{ inputs.job_environment }}/pgsql.yaml
-          kubectl apply -f k8s/${{ inputs.job_environment }}/app.yaml
+          kubectl apply -f k8s/${{ inputs.job_environment }}/pgsql.yaml --record
+          kubectl apply -f k8s/${{ inputs.job_environment }}/app.yaml --record
 
       - name: Clean manifests
         if: ${{ inputs.clean_manifests == true }}
