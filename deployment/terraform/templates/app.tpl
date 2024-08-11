@@ -1,5 +1,26 @@
 ---
 apiVersion: v1
+kind: Service
+metadata:
+  namespace: ${JOB_ENV}
+  name: bot-svc-${JOB_ENV}
+spec:
+  type: ClusterIP
+  sessionAffinitty: ClientIP
+  selector:
+    app: bot
+    env: ${JOB_ENV}
+  ports:
+    - name: first
+      port: 88
+      protocol: TCP
+      targetPort: main_port
+    - name: second
+      port: 8443
+      protocol: TCP
+      targetPort: second_port
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: ${JOB_ENV}
@@ -22,7 +43,11 @@ metadata:
   namespace: ${JOB_ENV}
   name: bot
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: bot
@@ -39,33 +64,14 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 88
+              name: main_port
+            - containerPort: 8443
+              name: second_port
           envFrom:
             - configMapRef:
                 name: app-secret
       imagePullSecrets:
         - name: dockerconfigjson-github-com
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: ${JOB_ENV}
-  name: bot-svc-${JOB_ENV}
-spec:
-  type: ClusterIP
-  selector:
-    app: bot
-    env: ${JOB_ENV}
-  ports:
-    - name: first
-      port: 88
-      protocol: TCP
-      targetPort: 88
-    - name: second
-      port: 8443
-      protocol: TCP
-      targetPort: 8443
-
 
 ---
 apiVersion: networking.k8s.io/v1
