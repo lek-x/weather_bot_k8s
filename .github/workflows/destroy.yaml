@@ -1,5 +1,5 @@
 ---
-name: Deploy
+name: Destroy
 # yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
@@ -38,38 +38,6 @@ on:
         default: false
 
 jobs:
-  Build_docker_image:
-    runs-on: self-hosted
-    environment: ${{ inputs.job_environment }}
-    steps:
-      - name: Clean old Docker images
-        if: "${{ inputs.clean_docker == true }}"
-        run: docker system prune -a -f
-
-      - name: Drop database
-        if: "${{ inputs.drop_db == true }}"
-        run: sudo rm -rf /opt/persist_volume-${{ inputs.job_environment }}/*
-
-      - name: Login to Docker Repository
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ vars.REPO }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          context: "{{defaultContext}}:docker"
-          tags: ${{ vars.REPO }}/lek-x/${{ vars.IMAGE_NAME }}:${{ github.run_number }}
-          secrets: |
-            GIT_AUTH_TOKEN=${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Check image by Anchore
-        run: |
-          grype  ${{ vars.REPO }}/${{ secrets.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ github.run_number }}
-
   Render_k8s_template:
     needs: [Build_docker_image]
     runs-on: [self-hosted]
@@ -144,17 +112,17 @@ jobs:
     environment: ${{ inputs.job_environment }}
     runs-on: [self-hosted]
     steps:
-      - name: Dry-run deploy k3s
+      - name: Dry-run deleting k3s
         if: ${{ inputs.dry_run == true }}
         run: |
-          kubectl apply --dry-run=server -f k8s/${{ inputs.job_environment }}/pgsql.yaml
-          kubectl apply --dry-run=server -f k8s/${{ inputs.job_environment }}/app.yaml
+          kubectl delete --dry-run=server -f k8s/${{ inputs.job_environment }}/app.yaml
+          kubectl delete --dry-run=server -f k8s/${{ inputs.job_environment }}/pgsql.yaml
 
-      - name: Deploy services
+      - name: Deleting Deployment
         if: ${{ inputs.dry_run == false }}
         run: |
-          kubectl apply -f k8s/${{ inputs.job_environment }}/pgsql.yaml --record
-          kubectl apply -f k8s/${{ inputs.job_environment }}/app.yaml --record
+          kubectl delete -f k8s/${{ inputs.job_environment }}/app.yaml --record
+          kubectl delete -f k8s/${{ inputs.job_environment }}/pgsql.yaml --record
 
       - name: Clean up manifests
         if: ${{ inputs.clean_manifests == true }}
