@@ -75,6 +75,9 @@ jobs:
     runs-on: [self-hosted]
     environment: ${{ inputs.job_environment }}
     steps:
+      - name: Fixing permission before checkout
+        run:  sudo chown runner:runner -R .
+
       - name: Checkout current repo
         uses: actions/checkout@v4
 
