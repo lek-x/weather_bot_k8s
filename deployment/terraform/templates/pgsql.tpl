@@ -50,6 +50,20 @@ spec:
       containers:
         - name: postgres
           image: 'postgres:16'
+          startupProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 10
+            failureThreshold: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 2
           imagePullPolicy: IfNotPresent
           ports:
             - name: pgsql-port
