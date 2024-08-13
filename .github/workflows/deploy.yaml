@@ -156,7 +156,7 @@ jobs:
           kubectl apply -f k8s/${{ inputs.job_environment }}/pgsql.yaml
           kubectl apply -f k8s/${{ inputs.job_environment }}/app.yaml
           kubectl annotate -n ${{ inputs.job_environment }} deployment/bot \
-          kubernetes.io/change-cause="${{ github.event.head_commit.message }}"
+          kubernetes.io/change-cause="${{ github.event.commits[0].message }}"
 
       - name: Clean up manifests
         if: ${{ inputs.clean_manifests == true }}
