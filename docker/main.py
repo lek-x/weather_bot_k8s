@@ -390,7 +390,7 @@ def get_weather(message):
     func for get weather and sending it to user
     """
     if re.match(
-        "VERSION",
+        "version",
         str(message.text).lower(),
     ):
         bot.reply_to(
