@@ -43,7 +43,7 @@ metadata:
   namespace: ${JOB_ENV}
   name: bot
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -61,6 +61,24 @@ spec:
       containers:
         - name: bot
           image: '${REPO}/lek-x/${IMAGE_NAME}:${VER}'
+          startupProbe:
+            exec:
+              command:
+                - stat
+                - /app/main.py
+            initialDelaySeconds: 10
+            failureThreshold: 10
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - stat
+                - /app/main.py
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 88
