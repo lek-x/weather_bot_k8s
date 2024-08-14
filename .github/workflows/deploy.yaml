@@ -150,13 +150,19 @@ jobs:
           kubectl apply --dry-run=server -f k8s/${{ inputs.job_environment }}/pgsql.yaml
           kubectl apply --dry-run=server -f k8s/${{ inputs.job_environment }}/app.yaml
 
+      - name: Get commit message header
+        id: get_commit_message
+        run: |
+          COMMIT_MESSAGE_HEADER=$(git log -1 --pretty=%B | head -n 1)
+          echo "COMMIT_MESSAGE_HEADER=${COMMIT_MESSAGE_HEADER}" >> $GITHUB_ENV
+
       - name: Deploy services
         if: ${{ inputs.dry_run == false }}
         run: |
           kubectl apply -f k8s/${{ inputs.job_environment }}/pgsql.yaml
           kubectl apply -f k8s/${{ inputs.job_environment }}/app.yaml
           kubectl annotate -n ${{ inputs.job_environment }} deployment/bot \
-          kubernetes.io/change-cause="${{ github.event.head_commit.message }}"
+          kubernetes.io/change-cause="$COMMIT_MESSAGE_HEADER"
 
       - name: Clean up manifests
         if: ${{ inputs.clean_manifests == true }}
